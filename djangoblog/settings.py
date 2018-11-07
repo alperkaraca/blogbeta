@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     # üçüncü parti uygulamalar
     'crispy_forms',
     'django_cleanup',
+    'ckeditor',
+    # 'captcha',
 ]
 
 MIDDLEWARE = [
@@ -127,9 +129,26 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+CKEDITOR_JQUERY_URL = os.path.join(STATIC_URL, 'js/jquery.min.js')
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        #'toolbar': 'full',
+        #'height': '',
+        'width': '100%',
+    },
+}
+
+"""
+RECAPTCHA_PUBLIC_KEY = '6Le1TnkUAAAAAO5Y1qYlGZ2JgFxuZel7XDncVA9h'
+RECAPTCHA_PRIVATE_KEY = '6Le1TnkUAAAAAEc5HRJEfBQrubD4aNgDGD52uFtQ'
+NOCAPTCHA = True
+"""

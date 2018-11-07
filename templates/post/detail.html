@@ -12,7 +12,8 @@
                             <img src="{{ post.image.url }}" class="img-responsive">
                         {% endif %}    
                         <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a> <small>{{ post.publishing_date }}</small></h3>
-                        <p>{{ post.content|linebreaks}}</p>
+                        <h4>Yazar: {{ post.user.get_full_name }}</h4>
+                        <p>{{ post.content|safe|linebreaks}}</p>
                         <p>
                             <a href="{{ post.get_absolute_url }}" class="btn btn-primary" role="button">İncele</a>
                             {% if request.user.is_authenticated %}
@@ -22,6 +23,20 @@
                         </p>
                     </div>
                 </div>
+
+                <br><br><hr>
+                <h3>Yorum Ekle:</h3>
+                {% include 'post/comment.html' %}
+                <hr>
+
+                {% for comment in post.comments.all %}
+
+                    <h4>{{ comment.name }} | <small>{{ comment.created_date|timesince }} önce</small> </h4>
+                    <p>{{ comment.content|linebreaks }}</p>
+                    <hr>
+
+                {% endfor %}
+
             </div>
         </div>
     </div>

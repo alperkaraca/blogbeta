@@ -21,7 +21,7 @@
             <!-- Arama Çubuğu -->
             <form class="navbar-form navbar-left" role="search" method="GET" action="">
                 <div class="input-group">
-                    <input class="form-control" type="text" name="q" placeholder="Search on blog" value="" >
+                    <input class="form-control" type="text" name="q" placeholder="Kelime veya yazar..." value="{{ request.GET.q }}" >
                     <span class="input-group-btn">
                         <input class="btn btn-default" type="submit" value="Ara">
                     </span>
@@ -31,12 +31,19 @@
             <!-- Temel Sayfalar -->
             <ul class="nav navbar-nav navbar-right">
                 {% if request.user.is_authenticated %}
-                    <li><a href="{% url 'post:create' %}">Yazı Ekle</a></li>
+                    <li><a href="{% url 'post:create' %}" >Yazı Ekle</a></li>
                 {% endif %}
                 <li><a href="{% url 'home' %}">Anasayfa</a></li>
                 <li><a href="{% url 'post:index' %}">Blog</a></li>
-                <li><a href="#">Hakkımızda</a></li>
+                <li><a href="#">Hakkımda</a></li>
                 <li><a href="#">İletişim</a></li>
+
+                {% if not request.user.is_authenticated %}
+                    <li><a href="{% url 'accounts:register' %}">Üye Ol</a></li>
+                    <li><a href="{% url 'accounts:login' %}">Giriş</a></li>
+                {% else %}
+                    <li><a href="{% url 'accounts:logout' %}">Çıkış</a></li>
+                {% endif %}
             </ul>
 
         </nav>

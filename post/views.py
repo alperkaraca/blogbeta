@@ -1,28 +1,58 @@
 from django.shortcuts import render, HttpResponse, get_object_or_404, HttpResponseRedirect, redirect, Http404
 from .models import Post
-from .forms import PostForm
+from .forms import PostForm, CommentForm
 from django.contrib import messages
+from django.utils.text import slugify
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Q
 
 def post_index(request):
-    posts = Post.objects.all()
-    return render(request, 'post/index.html', {'posts': posts})
-    # return HttpResponse("<marquee behavior=alternate><b>BURASI POST/INDEX SAYFASI</b</marquee>")
+    post_list = Post.objects.all()
+    
+    query = request.GET.get('q')
+    # query değeri gelip gelmediği sorgulanacak
+    if query:
+        # gelen değer sorgulanacak
+        post_list = post_list.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(user__first_name__icontains=query) |
+            Q(user__last_name__icontains=query)
+        ).distinct()
 
-def post_detail(request, id):
-    post = get_object_or_404(Post, id=id)
+    paginator = Paginator(post_list, 5)
+
+    page = request.GET.get('sayfa')
+    try:
+	    posts = paginator.page(page)
+    except PageNotAnInteger:
+	    # page integer değilse, ilk sayfayı getir
+	    posts = paginator.page(1)
+    except EmptyPage:
+	    # eğer çağrılan sayfa boş ise yok ise(ör: 99999), sonuçlardaki son 		# sayfayı getir:
+	    posts = paginator.page(paginator.num_pages)
+
+    return render(request, "post/index.html", {'posts': posts})
+
+
+def post_detail(request, slug):
+    post = get_object_or_404(Post, slug=slug)
+
+    form = CommentForm(request.POST or None)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.post = post # yorumların hangi postlara ait olduğu bildisini tutuyoruz. yukarıdaki post değişkeninden alıyoruz.
+        comment.save()
+        return HttpResponseRedirect(post.get_absolute_url())
+
     context = {
         'post': post,
+        'form': form,
     }
-    return render(request, 'post/detail.html', context)
-    # return HttpResponse("<marquee behavior=alternate><b>BURASI POST/DETAIL SAYFASI</b</marquee>")
+    return render(request, "post/detail.html", context)
+
 
 def post_create(request):
-
-    if not request.user.is_authenticated():
-        return Http404()
-
-
-
     # if request.method == "POST":
     #     print(request.POST)
     #
@@ -39,12 +69,16 @@ def post_create(request):
     #     # Formu kullanıcıya göster
     #     form = PostForm()
 
+    if not request.user.is_authenticated():
+        # Eğer kullanıcı giriş yapmamış ise hata sayfası gönder
+        return Http404()
+
     form = PostForm(request.POST or None, request.FILES or None)
     if form.is_valid():
-        post = form.save()
-        # yeni eklenen kısım başı
-        messages.success(request, 'Gönderim Başarılı!')
-	    # yeni eklenen kısım sonu
+        post = form.save(commit=False)
+        post.user = request.user # istek yapan kullanıcı getirilir ve o da yazar olarak kullanılır.
+        post.save()
+        messages.success(request, "Başarılı bir şekilde oluşturdunuz.", extra_tags='mesaj-basarili')
         return HttpResponseRedirect(post.get_absolute_url())
 
     context = {
@@ -52,32 +86,34 @@ def post_create(request):
     }
 
     return render(request, "post/form.html", context)
-    # return HttpResponse("<marquee behavior=alternate><b>BURASI POST/CREATE SAYFASI</b</marquee>")
 
-def post_update(request, id):
+
+def post_update(request, slug):
 
     if not request.user.is_authenticated():
+        # Eğer kullanıcı giriş yapmamış ise hata sayfası gönder
         return Http404()
 
-    post = get_object_or_404(Post, id=id)
-    form = PostForm(request.POST or None, request.FILES or None, instance=post) # bir üstteki post
+    post = get_object_or_404(Post, slug=slug)
+    form = PostForm(request.POST or None, request.FILES or None, instance=post)
     if form.is_valid():
         form.save()
-        messages.success(request, 'Güncelleme başarılı!')
+        messages.success(request, "Başarılı bir şekilde güncellediniz.")
         return HttpResponseRedirect(post.get_absolute_url())
+
     context = {
         'form': form
     }
 
     return render(request, "post/form.html", context)
-    # return HttpResponse("<marquee behavior=alternate><b>BURASI POST/UPDATE SAYFASI</b</marquee>")
 
-def post_delete(request, id):
+
+def post_delete(request, slug):
 
     if not request.user.is_authenticated():
+        # Eğer kullanıcı giriş yapmamış ise hata sayfası gönder
         return Http404()
 
-    post = get_object_or_404(Post, id=id)
+    post = get_object_or_404(Post, slug=slug)
     post.delete()
     return redirect("post:index")
-    # return HttpResponse("<marquee behavior=alternate><b>BURASI POST/DELETE SAYFASI</b</marquee>")
