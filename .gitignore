@@ -58,11 +58,7 @@ accounts/migrations/*
 !accounts/migrations/__init__.py
 staticfiles
 *.pyc
-
 *~
-
 db.sqlite3
-
-/static
 .DS_Store
 .vscode
