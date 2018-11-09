@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'iwlv2s56j5-seo$3nfz5zq!@s*0^8!^q6s#v)mbdo9_dq423iv'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['alperkaraca.online', 'www.alperkaraca.online', '188.166.29.238']
 
 
 # Application definition
