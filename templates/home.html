@@ -1,11 +1,7 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block title %} Anasayfa - {{ block.super }} {% endblock %} {% block body %}
 
-{% block title %} Anasayfa - {{ block.super }} {% endblock %}
-
-{% block body %}
-    
-    <div class="container-fluid">
-        <!--
+<div class="container-fluid">
+    <!--
         <div class="row" style="margin-bottom: 30px;">
             
             <div class="col-md-8 col-sm-10 col-xs-6" style="background-color: red">1. sütun</div>
@@ -43,8 +39,14 @@
             </div>
         </div>
     -->
-        <h1>Hoşgeldiniz <b>{{ request.user.get_full_name }}</b> beş gittiniz.</h1>
-        <p>En büyük büyüklük, büyüklüğü büyüklükle büyüten büyüklüğü büyülükle büyüten büyüklüktür.</p>
+    <div class="bg-image"></div>
+
+    <div class="bg-text">
+        <h1>Hoşgeldiniz <b>{{ request.user.get_full_name }}</b></h1>
+        <h1 style="font-size:50px">Adım Alper</h1>
+        <p>Büyüklük, büyüklüğü büyüklükle büyütmeyenlerin büyüklüğüyle büyür.</p><small>A.K.</small>
     </div>
+
+</div>
 
 {% endblock %}
