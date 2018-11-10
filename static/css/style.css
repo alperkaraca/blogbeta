@@ -8,7 +8,7 @@ body {
 
 .bg-image {
     /* The image used */
-    background-image: url("{% static '/img/alper.jpg'%}");
+    background-image: url("{% static 'img/alper.jpg'%}");
     
     /* Add the blur effect */
     filter: blur(8px);
