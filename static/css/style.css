@@ -5,13 +5,20 @@ body {
 }
 
 .glow {
-    font-size: 60px;
+    font-size: 50px;
     color: #fff;
     text-align: center;
     -webkit-animation: glow 1s ease-in-out infinite alternate;
     -moz-animation: glow 1s ease-in-out infinite alternate;
     animation: glow 1s ease-in-out infinite alternate;
   }
+
+  .center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
   
   @-webkit-keyframes glow {
     from {
